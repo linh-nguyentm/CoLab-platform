@@ -14,7 +14,10 @@ export default function DashboardPage() {
     role === "student"
       ? topics.filter((t) => t.status === "published")
       : topics.filter((t) => t.status === "published" || t.status === "under_review");
-  const matchedTopics = topics.filter((t) => t.status === "matched");
+  const matchedTopics =
+    role === "company"
+      ? topics.filter((t) => t.status === "matched" && t.companyId === CURRENT_COMPANY_ID)
+      : topics.filter((t) => t.status === "matched");
   const activeProjects =
     role === "company"
       ? projects.filter((p) => p.status === "active" && p.companyId === CURRENT_COMPANY_ID)
