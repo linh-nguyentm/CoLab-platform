@@ -36,6 +36,11 @@ interface AppStateValue {
   notifications: AppNotification[];
 
   createDraft: (draft: Omit<ProjectDraft, "id" | "createdDate" | "companyId">) => ProjectDraft;
+  updateDraft: (
+    draftId: string,
+    fields: Omit<ProjectDraft, "id" | "createdDate" | "companyId">
+  ) => void;
+  deleteDraft: (draftId: string) => void;
   submitDraftToChairs: (draftId: string, chairIds: string[]) => void;
   respondToSubmission: (
     submissionId: string,
@@ -130,6 +135,18 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     };
     setDrafts((prev) => [newDraft, ...prev]);
     return newDraft;
+  }
+
+  function updateDraft(
+    draftId: string,
+    fields: Omit<ProjectDraft, "id" | "createdDate" | "companyId">
+  ) {
+    setDrafts((prev) => prev.map((d) => (d.id === draftId ? { ...d, ...fields } : d)));
+  }
+
+  function deleteDraft(draftId: string) {
+    setDrafts((prev) => prev.filter((d) => d.id !== draftId));
+    setSubmissions((prev) => prev.filter((s) => s.draftId !== draftId));
   }
 
   function submitDraftToChairs(draftId: string, chairIds: string[]) {
@@ -491,6 +508,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         submissions,
         notifications,
         createDraft,
+        updateDraft,
+        deleteDraft,
         submitDraftToChairs,
         respondToSubmission,
         expressInterest,

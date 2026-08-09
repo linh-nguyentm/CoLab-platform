@@ -17,7 +17,7 @@ export default function TopicsPage() {
   const profile = getStudentProfile(CURRENT_STUDENT_NAME);
 
   const visibleTopics =
-    role === "student" ? topics.filter((t) => t.status === "published" || t.status === "matched") : topics;
+    role === "student" ? topics.filter((t) => t.status === "published") : topics;
 
   const allSkills = useMemo(() => {
     const s = new Set<string>();

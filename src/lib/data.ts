@@ -420,6 +420,27 @@ export const topics: Topic[] = [
     interested: 0,
     applicants: [],
   },
+  {
+    id: "t6",
+    title: "Satellite-image vegetation classification for site screening",
+    company: "BirdVision",
+    companyId: "c1",
+    chair: "Chair of Digital Innovation (Campus Heilbronn)",
+    chairId: "ch1",
+    university: "TUM School of Management",
+    universityId: "u1",
+    domain: "AI & Sustainability",
+    duration: "1 semester (~4 months)",
+    skills: ["Python", "Computer vision", "Data analysis"],
+    problem:
+      "BirdVision wants to classify vegetation and habitat type from public satellite imagery to enrich the site-screening pipeline used alongside the bird-collision risk score.",
+    outcome:
+      "A prototype classifier plus a short report comparing its output against known habitat maps for 3 sites.",
+    status: "published",
+    places: 1,
+    interested: 0,
+    applicants: [],
+  },
 ];
 
 export const projects: Project[] = [
