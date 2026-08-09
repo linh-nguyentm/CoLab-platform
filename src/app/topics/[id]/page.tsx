@@ -20,6 +20,24 @@ export default function TopicDetailPage({
 
   if (!topic) return notFound();
 
+  if (role === "company") {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <h1 className="text-xl font-semibold text-slate-900">Not available for companies</h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Topic details for other companies&apos; submissions aren&apos;t shown to a company
+          account. Track your own topics from the company hub instead.
+        </p>
+        <Link
+          href="/company"
+          className="mt-6 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
+        >
+          Go to company hub →
+        </Link>
+      </div>
+    );
+  }
+
   const project = getProjectByTopic(topic.id);
   const alreadyApplied = topic.applicants.includes(CURRENT_STUDENT_NAME);
   const profile = getStudentProfile(CURRENT_STUDENT_NAME);

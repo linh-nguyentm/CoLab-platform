@@ -82,6 +82,7 @@ export interface Project {
   topicId: string;
   title: string;
   company: string;
+  companyId: string;
   companyContact: string;
   chair: string;
   supervisor: string;
@@ -449,6 +450,7 @@ export const projects: Project[] = [
     topicId: "t1",
     title: "Bird-collision risk scoring for new wind sites",
     company: "BirdVision",
+    companyId: "c1",
     companyContact: "Benjamin Braun",
     chair: "Chair of Digital Innovation, TUM Campus Heilbronn",
     supervisor: "Lukas Herrmann (PhD candidate)",
@@ -610,6 +612,7 @@ export const projects: Project[] = [
     topicId: "t2",
     title: "Consumer search behavior: search engine vs. LLM assistant",
     company: "Google",
+    companyId: "c2",
     companyContact: "Business Manager (Istanbul office)",
     chair: "Chair of Digital Marketing, TUM School of Management",
     supervisor: "Academic supervisor (PhD candidate)",
@@ -709,6 +712,7 @@ export const projects: Project[] = [
     topicId: "t3",
     title: "Early-stage AI startup scouting signals",
     company: "Confidential — venture capital firm",
+    companyId: "c3",
     companyContact: "Principal (name withheld)",
     chair: "Chair of Entrepreneurship and Family Enterprise, TUM School of Management",
     supervisor: "Dr. Felix Brandt (Coordinator)",

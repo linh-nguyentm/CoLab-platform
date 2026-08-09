@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAppState } from "@/lib/app-state";
 import { companies, getChair, getUniversity, CURRENT_COMPANY_ID, type ProjectDraft } from "@/lib/data";
+import { HealthBadge } from "@/components/Badge";
 
 const statusStyles: Record<string, string> = {
   submitted: "bg-blue-50 text-blue-700 ring-blue-200",
@@ -32,9 +33,12 @@ function toEditForm(draft: ProjectDraft): EditForm {
 }
 
 export default function CompanyHubPage() {
-  const { drafts, submissions, updateDraft, deleteDraft } = useAppState();
+  const { drafts, submissions, projects, updateDraft, deleteDraft } = useAppState();
   const company = companies.find((c) => c.id === CURRENT_COMPANY_ID);
   const myDrafts = drafts.filter((d) => d.companyId === CURRENT_COMPANY_ID);
+  const myActiveProjects = projects.filter(
+    (p) => p.companyId === CURRENT_COMPANY_ID && p.status === "active"
+  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<EditForm | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -77,6 +81,45 @@ export default function CompanyHubPage() {
             + Post a new project
           </Link>
         </div>
+      </div>
+
+      <h2 className="mt-10 text-base font-semibold text-slate-900">
+        Your active projects with universities
+      </h2>
+      <p className="mt-1 text-sm text-slate-500">
+        Once a chair matches a student to one of your topics, it becomes a live project workspace
+        here.
+      </p>
+      <div className="mt-5 space-y-3">
+        {myActiveProjects.length === 0 && (
+          <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-400">
+            No active projects yet — once a chair matches a student to one of your topics, it will
+            show up here.
+          </p>
+        )}
+        {myActiveProjects.map((p) => (
+          <Link
+            key={p.id}
+            href={`/projects/${p.id}`}
+            className="block rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300 hover:shadow-sm"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-medium text-slate-900">{p.title}</h3>
+                <p className="mt-1 text-sm text-slate-500">{p.chair}</p>
+              </div>
+              <HealthBadge health={p.health} />
+            </div>
+            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-400">
+              <span>Agreement {p.agreementVersion}</span>
+              <span>{p.studentTeam.length} student(s)</span>
+              <span>
+                {p.deliverables.filter((d) => d.status === "done").length}/{p.deliverables.length}{" "}
+                deliverables done
+              </span>
+            </div>
+          </Link>
+        ))}
       </div>
 
       <h2 className="mt-10 text-base font-semibold text-slate-900">Your project submissions</h2>

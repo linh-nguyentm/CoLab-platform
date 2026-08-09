@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRole } from "@/lib/role-context";
 import { useAppState } from "@/lib/app-state";
 import { HealthBadge, TopicStatusBadge } from "@/components/Badge";
+import { CURRENT_COMPANY_ID } from "@/lib/data";
 
 export default function DashboardPage() {
   const { role } = useRole();
@@ -14,7 +15,10 @@ export default function DashboardPage() {
       ? topics.filter((t) => t.status === "published")
       : topics.filter((t) => t.status === "published" || t.status === "under_review");
   const matchedTopics = topics.filter((t) => t.status === "matched");
-  const activeProjects = projects.filter((p) => p.status === "active");
+  const activeProjects =
+    role === "company"
+      ? projects.filter((p) => p.status === "active" && p.companyId === CURRENT_COMPANY_ID)
+      : projects.filter((p) => p.status === "active");
   const needsAttention = activeProjects.filter((p) => p.health !== "on_track");
 
   const intro: Record<typeof role, { title: string; body: string }> = {
@@ -76,8 +80,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <div className={`mt-10 grid gap-8 ${role === "company" ? "" : "lg:grid-cols-3"}`}>
+        <div className={role === "company" ? "" : "lg:col-span-2"}>
           <h2 className="text-base font-semibold text-slate-900">Active projects</h2>
           <div className="mt-4 space-y-3">
             {activeProjects.map((p) => (
@@ -105,6 +109,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {role !== "company" && (
         <div>
           <h2 className="text-base font-semibold text-slate-900">Topic catalogue</h2>
           <div className="mt-4 space-y-3">
@@ -129,6 +134,7 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

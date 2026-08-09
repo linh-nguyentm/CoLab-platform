@@ -32,7 +32,6 @@ const navLinksByRole: Record<Role, { href: string; label: string }[]> = {
   company: [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/company", label: "Company hub" },
-    { href: "/topics", label: "Topics" },
     { href: "/registry", label: "Registry" },
     { href: "/showcase", label: "Showcase" },
   ],

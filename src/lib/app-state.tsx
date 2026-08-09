@@ -251,6 +251,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       topicId: topic.id,
       title: topic.title,
       company: topic.company,
+      companyId: topic.companyId,
       companyContact: getCompany(topic.companyId)?.contactName ?? topic.company,
       chair: `${topic.chair}, ${topic.university}`,
       supervisor: chair ? `${chair.contactName} (${chair.contactRole})` : "Supervisor",

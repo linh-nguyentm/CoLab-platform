@@ -36,6 +36,25 @@ export default function TopicsPage() {
     return matchesQuery && matchesSkill && matchesUniversity;
   });
 
+  if (role === "company") {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <h1 className="text-xl font-semibold text-slate-900">Not available for companies</h1>
+        <p className="mt-2 text-sm text-slate-500">
+          This catalogue would show other companies&apos; project topics, which isn&apos;t
+          something a company account should see. Track your own topics and active projects from
+          the company hub instead.
+        </p>
+        <Link
+          href="/company"
+          className="mt-6 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
+        >
+          Go to company hub →
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
       <h1 className="text-2xl font-semibold text-slate-900">Topic catalogue</h1>
