@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAppState } from "@/lib/app-state";
-import { getDraft, getCompany, getUniversity, daysUntil, chairs, CURRENT_CHAIR_ID } from "@/lib/data";
+import { getDraft, getCompany, getProjectByTopic, getUniversity, daysUntil, chairs, CURRENT_CHAIR_ID } from "@/lib/data";
 import { TopicStatusBadge } from "@/components/Badge";
 
 export default function ChairInboxPage() {
-  const { submissions, topics, respondToSubmission, matchStudent } = useAppState();
+  const { submissions, topics, projects, respondToSubmission, matchStudent } = useAppState();
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [reason, setReason] = useState("");
   const [showCrossChair, setShowCrossChair] = useState(false);
@@ -159,13 +159,48 @@ export default function ChairInboxPage() {
               <TopicStatusBadge status={topic.status} />
             </div>
             <p className="mt-2 text-xs text-slate-400">{topic.applicants.length} student(s) interested</p>
+
+            {topic.status === "matched" &&
+              (() => {
+                const project = getProjectByTopic(topic.id) ?? projects.find((p) => p.topicId === topic.id);
+                return (
+                  <div className="mt-3 rounded-lg bg-emerald-50 p-3 ring-1 ring-emerald-200">
+                    <p className="text-sm text-emerald-800">
+                      Working on this project: <span className="font-medium">{project?.studentTeam.join(", ") ?? "—"}</span>
+                    </p>
+                    {project && (
+                      <Link
+                        href={`/projects/${project.id}`}
+                        className="mt-1 inline-block text-xs font-semibold text-emerald-700 hover:underline"
+                      >
+                        Open the project workspace →
+                      </Link>
+                    )}
+                  </div>
+                );
+              })()}
+
             {topic.status === "published" && topic.applicants.length > 0 && (
               <ul className="mt-3 divide-y divide-slate-100 border-t border-slate-100">
-                {topic.applicants.map((name) => (
-                  <li key={name} className="flex items-center justify-between gap-3 py-2.5">
-                    <span className="text-sm text-slate-700">{name}</span>
+                {topic.applicants.map((a) => (
+                  <li key={a.studentName} className="flex items-center justify-between gap-3 py-2.5">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-slate-700">{a.studentName}</span>
+                        {a.teamNote ? (
+                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700">
+                            Has a team preference
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                            Looking for a team
+                          </span>
+                        )}
+                      </div>
+                      {a.teamNote && <p className="mt-0.5 text-xs text-slate-500">{a.teamNote}</p>}
+                    </div>
                     <button
-                      onClick={() => matchStudent(topic.id, name)}
+                      onClick={() => matchStudent(topic.id, a.studentName)}
                       className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-500"
                     >
                       Match & open workspace

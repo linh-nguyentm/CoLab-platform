@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProjectByTopic, getStudentProfile, matchScoreForStudent, CURRENT_STUDENT_NAME } from "@/lib/data";
@@ -14,9 +14,10 @@ export default function TopicDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { topics, expressInterest } = useAppState();
+  const { topics, projects, expressInterest } = useAppState();
   const topic = topics.find((t) => t.id === id);
   const { role } = useRole();
+  const [teamNote, setTeamNote] = useState("");
 
   if (!topic) return notFound();
 
@@ -38,8 +39,8 @@ export default function TopicDetailPage({
     );
   }
 
-  const project = getProjectByTopic(topic.id);
-  const alreadyApplied = topic.applicants.includes(CURRENT_STUDENT_NAME);
+  const project = getProjectByTopic(topic.id) ?? projects.find((p) => p.topicId === topic.id);
+  const alreadyApplied = topic.applicants.some((a) => a.studentName === CURRENT_STUDENT_NAME);
   const profile = getStudentProfile(CURRENT_STUDENT_NAME);
   const match = profile ? matchScoreForStudent(topic, profile) : undefined;
 
@@ -77,6 +78,52 @@ export default function TopicDetailPage({
               ))}
             </div>
           </section>
+
+          {role === "academic" && (topic.status === "published" || topic.status === "matched") && (
+            <section>
+              <h2 className="text-sm font-semibold text-slate-900">
+                {topic.status === "matched" ? "Student team" : "Interested students"}
+              </h2>
+              {topic.status === "matched" ? (
+                <div className="mt-2 rounded-lg bg-emerald-50 p-4 ring-1 ring-emerald-200">
+                  <p className="text-sm text-emerald-800">
+                    Matched — working on this project:{" "}
+                    <span className="font-medium">{project?.studentTeam.join(", ") ?? "—"}</span>
+                  </p>
+                  {project && (
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="mt-1 inline-block text-sm font-semibold text-emerald-700 hover:underline"
+                    >
+                      Open the project workspace →
+                    </Link>
+                  )}
+                </div>
+              ) : topic.applicants.length === 0 ? (
+                <p className="mt-2 text-sm text-slate-400">No students have applied yet.</p>
+              ) : (
+                <ul className="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
+                  {topic.applicants.map((a) => (
+                    <li key={a.studentName} className="px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-medium text-slate-800">{a.studentName}</span>
+                        {a.teamNote ? (
+                          <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                            Has a team preference
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+                            Looking for a team
+                          </span>
+                        )}
+                      </div>
+                      {a.teamNote && <p className="mt-1 text-xs text-slate-500">{a.teamNote}</p>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
 
           {topic.status === "not_selected" && (
             <div className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500 ring-1 ring-slate-200">
@@ -153,13 +200,28 @@ export default function TopicDetailPage({
           </div>
 
           {role === "student" && topic.status === "published" && (
-            <button
-              onClick={() => expressInterest(topic.id, CURRENT_STUDENT_NAME)}
-              disabled={alreadyApplied}
-              className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:bg-emerald-600"
-            >
-              {alreadyApplied ? "Interest sent ✓" : "Express interest"}
-            </button>
+            <div className="space-y-2">
+              {!alreadyApplied && (
+                <div>
+                  <label className="text-xs font-medium text-slate-500">
+                    Want to team up with someone? (optional)
+                  </label>
+                  <input
+                    value={teamNote}
+                    onChange={(e) => setTeamNote(e.target.value)}
+                    placeholder="e.g. Applying with Julia Becker"
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+              <button
+                onClick={() => expressInterest(topic.id, CURRENT_STUDENT_NAME, teamNote.trim())}
+                disabled={alreadyApplied}
+                className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:bg-emerald-600"
+              >
+                {alreadyApplied ? "Interest sent ✓" : "Express interest"}
+              </button>
+            </div>
           )}
           {role !== "student" && (
             <p className="text-center text-xs text-slate-400">

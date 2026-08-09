@@ -6,6 +6,11 @@ export type TopicStatus =
   | "matched"
   | "not_selected";
 
+export interface TopicApplicant {
+  studentName: string;
+  teamNote?: string;
+}
+
 export interface Topic {
   id: string;
   title: string;
@@ -24,7 +29,7 @@ export interface Topic {
   statusReason?: string;
   places: number;
   interested: number;
-  applicants: string[];
+  applicants: TopicApplicant[];
 }
 
 export type ProjectHealth = "on_track" | "attention" | "at_risk" | "blocked";
@@ -355,7 +360,11 @@ export const topics: Topic[] = [
     status: "matched",
     places: 1,
     interested: 4,
-    applicants: ["Mai Tran", "Julia Becker", "Samuel Osei"],
+    applicants: [
+      { studentName: "Mai Tran" },
+      { studentName: "Julia Becker", teamNote: "Would like to team up with Samuel Osei." },
+      { studentName: "Samuel Osei", teamNote: "Open to teaming with Julia Becker." },
+    ],
   },
   {
     id: "t2",
@@ -376,7 +385,7 @@ export const topics: Topic[] = [
     status: "matched",
     places: 1,
     interested: 6,
-    applicants: ["Yen Vu", "Rui Zhang"],
+    applicants: [{ studentName: "Yen Vu" }, { studentName: "Rui Zhang" }],
   },
   {
     id: "t3",
@@ -477,7 +486,7 @@ export const topics: Topic[] = [
     status: "matched",
     places: 1,
     interested: 3,
-    applicants: ["Anna Keller"],
+    applicants: [{ studentName: "Anna Keller" }],
   },
   {
     id: "t8",
@@ -498,7 +507,10 @@ export const topics: Topic[] = [
     status: "matched",
     places: 2,
     interested: 5,
-    applicants: ["David Nwosu", "Petra Zima"],
+    applicants: [
+      { studentName: "David Nwosu", teamNote: "Teaming up with Petra Zima." },
+      { studentName: "Petra Zima", teamNote: "Teaming up with David Nwosu." },
+    ],
   },
   {
     id: "t9",
@@ -519,7 +531,10 @@ export const topics: Topic[] = [
     status: "published",
     places: 1,
     interested: 2,
-    applicants: [],
+    applicants: [
+      { studentName: "Lena Fischer" },
+      { studentName: "Tom Bergmann" },
+    ],
   },
   {
     id: "t10",
@@ -561,7 +576,11 @@ export const topics: Topic[] = [
     status: "published",
     places: 2,
     interested: 6,
-    applicants: [],
+    applicants: [
+      { studentName: "Noah Fischer", teamNote: "Would like to team up with Elena Marchetti again." },
+      { studentName: "Elena Marchetti", teamNote: "Would like to team up with Noah Fischer again." },
+      { studentName: "Jonas Weber" },
+    ],
   },
   {
     id: "t12",

@@ -47,7 +47,7 @@ interface AppStateValue {
     decision: "accepted" | "rejected",
     note: string
   ) => void;
-  expressInterest: (topicId: string, studentName: string) => void;
+  expressInterest: (topicId: string, studentName: string, teamNote?: string) => void;
   matchStudent: (topicId: string, studentName: string) => Project | undefined;
   submitCheckpoint: (
     projectId: string,
@@ -231,11 +231,15 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  function expressInterest(topicId: string, studentName: string) {
+  function expressInterest(topicId: string, studentName: string, teamNote?: string) {
     setTopics((prev) =>
       prev.map((t) =>
-        t.id === topicId && !t.applicants.includes(studentName)
-          ? { ...t, applicants: [...t.applicants, studentName], interested: t.interested + 1 }
+        t.id === topicId && !t.applicants.some((a) => a.studentName === studentName)
+          ? {
+              ...t,
+              applicants: [...t.applicants, { studentName, teamNote: teamNote || undefined }],
+              interested: t.interested + 1,
+            }
           : t
       )
     );
