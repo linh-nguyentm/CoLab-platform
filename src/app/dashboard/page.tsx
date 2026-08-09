@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRole } from "@/lib/role-context";
 import { useAppState } from "@/lib/app-state";
 import { HealthBadge, TopicStatusBadge } from "@/components/Badge";
-import { CURRENT_COMPANY_ID } from "@/lib/data";
+import { CURRENT_COMPANY_ID, CURRENT_STUDENT_NAME } from "@/lib/data";
 
 export default function DashboardPage() {
   const { role } = useRole();
@@ -21,7 +21,9 @@ export default function DashboardPage() {
   const activeProjects =
     role === "company"
       ? projects.filter((p) => p.status === "active" && p.companyId === CURRENT_COMPANY_ID)
-      : projects.filter((p) => p.status === "active");
+      : role === "student"
+        ? projects.filter((p) => p.status === "active" && p.studentTeam.includes(CURRENT_STUDENT_NAME))
+        : projects.filter((p) => p.status === "active");
   const needsAttention = activeProjects.filter((p) => p.health !== "on_track");
 
   const intro: Record<typeof role, { title: string; body: string }> = {
