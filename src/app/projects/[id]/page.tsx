@@ -754,8 +754,7 @@ export default function ProjectPage({
                     ))}
                   </ul>
                 )}
-                {(role === "academic" || role === "company") && (
-                  <div className="mt-3 space-y-2 rounded-lg border border-dashed border-slate-300 p-3">
+                <div className="mt-3 space-y-2 rounded-lg border border-dashed border-slate-300 p-3">
                     <input
                       placeholder="Meeting title"
                       value={meetingForm.title}
@@ -783,7 +782,6 @@ export default function ProjectPage({
                       + Add meeting
                     </button>
                   </div>
-                )}
               </div>
 
               <div>
